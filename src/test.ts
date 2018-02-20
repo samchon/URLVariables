@@ -11,6 +11,24 @@ interface IAuthor
     homepage: string;
     memo: string;
     is_crazy: boolean;
+
+    [key: string]: any;
+}
+
+function main()
+{
+    let author: IAuthor = 
+    {
+        name: "Samchon (Jeongho Nam)",
+        age: 29,
+        git: "https://github.com/samchon/tstl",
+        homepage: "http://samchon.org",
+        memo: "Hello, I'm the best programmer in Korea.",
+        is_crazy: true
+    };
+    
+    test_class(author);
+    test_global(author);
 }
 
 function test_class(author: IAuthor): void
@@ -25,7 +43,7 @@ function test_class(author: IAuthor): void
     dict.set("age", String(author.age)); // MUST BE STRING
     dict.set("git", author.git);
     dict.set("homepage", author.homepage);
-    dict.set("memo", author.homepage);
+    dict.set("memo", author.memo);
     dict.set("is_crazy", String(author.is_crazy));
 
     // CONVERT THE URL-VARIABLES OBJECT TO URL-ENCODED STRING
@@ -77,26 +95,33 @@ function test_class(author: IAuthor): void
     console.log("Has nickname?:", dict.has("nickname"));
 }
 
-function test_dynamic(author: IAuthor): void
+function test_global(author: IAuthor): void
 {
-    let url_encoded_string: string = URLVariables.stringify(author);
-    console.log(url_encoded_string);
-}
+    console.log("\n----------------------------------\n");
 
-function main()
-{
-    let author: IAuthor = 
-    {
-        name: "Samchon (Jeongho Nam)",
-        age: 29,
-        git: "https://github.com/samchon/tstl",
-        homepage: "http://samchon.org",
-        memo: "Hello, I'm the best programmer in Korea.",
-        is_crazy: true
-    };
+    //----
+    // STRINGIFY -> OBJECT TO URL-ENCODED STRING
+    //----
+    let url_encoded_str: string = URLVariables.stringify(author);
+    let variables: URLVariables = new URLVariables(url_encoded_str);
+    
+    // VALIDATE STRINGIFY -> SAME WITH URL-VARIABLES ?
+    if (url_encoded_str != variables.toString())
+        throw new std.DomainError("Error on URLVariables.stringify().");
 
-    test_class(author);
-    test_dynamic(author);
+    //----
+    // PARSE -> URL-ENCODED STRING TO OBJECT
+    //----
+    let obj: IAuthor = URLVariables.parse(url_encoded_str, true);
+
+    // VALIDATE PARSE -> (AUTHOR == OBJ)?
+    for (let key in author)
+        if (author[key] != obj[key])
+            throw new std.DomainError("Error on URLVariables.parse().");
+
+    // PRINT A DYNAMIC OBJECT, CREATED BY URL-ENCODED STRING
+    console.log("Re-generated Dynamic Object by url-encoding & decoding:\n");
+    console.log(obj);
 }
 
 main();

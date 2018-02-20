@@ -99,7 +99,7 @@ namespace URLVariables
 	export type iterator = Iterator;
 	export type reverse_iterator = ReverseIterator;
 
-	export function parse<T = any>(str: string, autoCase: boolean = false): T
+	export function parse<T = any>(str: string, autoCase: boolean = true): T
 	{
 		let variables: URLVariables = new URLVariables(str);
 		let ret: any = new Object();
@@ -114,7 +114,7 @@ namespace URLVariables
 
 			if (entry.second == "true" || entry.second == "false")
 				ret[entry.first] = Boolean(entry.second);
-			else if (Number(entry.second) != NaN)
+			else if (Number.isNaN(Number(entry.second)) == false)
 				ret[entry.first] = Number(entry.second);
 			else
 				ret[entry.first] = entry.second;
