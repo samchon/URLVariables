@@ -99,13 +99,42 @@ namespace URLVariables
 	export type iterator = Iterator;
 	export type reverse_iterator = ReverseIterator;
 
-	export function parse(str: string): URLVariables
+	export function parse<T = any>(str: string, autoCase: boolean = false): T
 	{
-		return new URLVariables(str);
+		let variables: URLVariables = new URLVariables(str);
+		let ret: any = new Object();
+
+		for (let entry of variables)
+		{
+			if (!autoCase || entry.second == "")
+			{
+				ret[entry.first] = entry.second;
+				continue;
+			}
+
+			if (entry.second == "true" || entry.second == "false")
+				ret[entry.first] = Boolean(entry.second);
+			else if (Number(entry.second) != NaN)
+				ret[entry.first] = Number(entry.second);
+			else
+				ret[entry.first] = entry.second;
+		}
+		return ret;
 	}
 	
-	export function stringify(variables: URLVariables): string
+	export function stringify<T = any>(obj: T): string
 	{
+		if (typeof obj == "boolean" || typeof obj == "number")
+			return String(obj);
+		else if (typeof obj == "string")
+			return obj;
+		else if (obj instanceof URLVariables)
+			return obj.toString();
+
+		let variables: URLVariables = new URLVariables();
+		for (let key in obj)
+			variables.set(key, String(obj[key]));
+
 		return variables.toString();
 	}
 }

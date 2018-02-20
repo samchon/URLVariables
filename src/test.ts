@@ -3,7 +3,17 @@ import URLVariables = require("./index");
 
 type Element = std.Entry<string, string>;
 
-function main(): void
+interface IAuthor
+{
+    name: string;
+    age: number;
+    git: string;
+    homepage: string;
+    memo: string;
+    is_crazy: boolean;
+}
+
+function test_class(author: IAuthor): void
 {
     //----
     // GENERATE URL-VARIABLES OBJECT
@@ -11,12 +21,12 @@ function main(): void
     let dict: URLVariables = new URLVariables();
     
     // FILL ELEMENTS
-    dict.set("name", "Samchon (Jeongho Nam)");
-    dict.set("age", "29"); // MUST BE STRING
-    dict.set("git", "https://github.com/samchon/tstl");
-    dict.set("homepage", "http://samchon.org");
-    dict.set("memo", "Hello, I'm the best programmer in Korea.");
-    dict.set("is_crazy", ""); // NO VALUE IS ALSO POSSIBLE
+    dict.set("name", author.name);
+    dict.set("age", String(author.age)); // MUST BE STRING
+    dict.set("git", author.git);
+    dict.set("homepage", author.homepage);
+    dict.set("memo", author.homepage);
+    dict.set("is_crazy", String(author.is_crazy));
 
     // CONVERT THE URL-VARIABLES OBJECT TO URL-ENCODED STRING
 	let url_encoded_str: string = dict.toString();
@@ -66,4 +76,27 @@ function main(): void
     console.log("Has name?:", dict.has("name"));
     console.log("Has nickname?:", dict.has("nickname"));
 }
+
+function test_dynamic(author: IAuthor): void
+{
+    let url_encoded_string: string = URLVariables.stringify(author);
+    console.log(url_encoded_string);
+}
+
+function main()
+{
+    let author: IAuthor = 
+    {
+        name: "Samchon (Jeongho Nam)",
+        age: 29,
+        git: "https://github.com/samchon/tstl",
+        homepage: "http://samchon.org",
+        memo: "Hello, I'm the best programmer in Korea.",
+        is_crazy: true
+    };
+
+    test_class(author);
+    test_dynamic(author);
+}
+
 main();
