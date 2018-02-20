@@ -1,0 +1,27 @@
+{
+  "name": "url-variables",
+  "version": "0.0.0",
+  "description": "URLVariables class for TypeScript",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc && tsc --removeComments --declaration false && node lib/test",
+    "test": "node lib/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samchon/urlvariables.git"
+  },
+  "keywords": [
+    "URLVariables"
+  ],
+  "author": "Jeongho Nam",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/samchon/urlvariables/issues"
+  },
+  "homepage": "https://github.com/samchon/urlvariables#readme",
+  "dependencies": {
+    "tstl": "~x.x.x"
+  }
+}
