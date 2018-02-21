@@ -113,7 +113,7 @@ namespace URLVariables
 			}
 
 			if (entry.second == "true" || entry.second == "false")
-				ret[entry.first] = Boolean(entry.second);
+				ret[entry.first] = (entry.second == "true");
 			else if (Number.isNaN(Number(entry.second)) == false)
 				ret[entry.first] = Number(entry.second);
 			else
