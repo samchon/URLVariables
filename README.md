@@ -5,29 +5,23 @@
 [![DeepScan grade](https://deepscan.io/api/projects/1948/branches/8874/badge/grade.svg)](https://deepscan.io/dashboard#view=project&pid=1948&bid=8874)
 [![Chat on Gitter](https://badges.gitter.im/samchon/URLVariables.svg)](https://gitter.im/samchon/URLVariables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-`URLVariables`, it's the most simple, concise and eledic library for URL-encoding & URL-decoding. 
-
-To use `URLVariables`, just remember that below structure, then you'll understand how to use it. If you want to know more about the deatailed feature, then utilize auto-completion of TypeScript or read the [Guide Documents](https://github.com/samchon/URLVariables/wiki).
+`URLVariables`, it's the most simple, concise and eledic library for URL-encoding & URL-decoding. You can parse or encode url-string very easily with this `URLVariables`.
 
 ```typescript
-class URLVariables extends std.HashMap<string, string>
-{
-    // CONSTRUCTORS & CONVERTERS
-    public constructor();
-    public constructor(url_encoded_str: string); // PARSE
-    public toString(); // RETURNS URL-ENCODED STRING
+import URLVariables = require("url-variables");
 
-    // ACCESSORS
-    public has(key: string): boolean;
-    public get(key: string): string;
-    public set(key: string, value: string): string;
-}
+let url_str: string = "https://some_url?id=samchon&age=29&is_crazy=true";
+let author: IAuthor = URLVariables.parse<IAuthor>(url_str);
 
-namespace URLVariables
+console.log(author.id); // "samchon" => string
+console.log(author.age); // 29 => number
+console.log(author.is_crazy); // true => boolean
+
+interface IAuthor
 {
-    // DYNAMIC OBJECT
-    function parse(str: string, autoCase: boolean = true): Object;
-    function stringify(obj: Object): string;
+    id: string;
+    age: number;
+    is_crazy: boolean;
 }
 ```
 
@@ -40,10 +34,36 @@ Installing **URLVariables**, it's very easy. Just install with the `npm`
 npm install --save url-variables
 ```
 
-### Usage
-In this section, we will study how to generate `URLVariables` object and convert the `URLVariables` object to the `URL-encoded string`. After that, we'll study how to parse the URL-encoded string and access to members of that `URLVariables` object. At last, we'll see global functions `URLVariables.parse()` and `URLVariables.stringify()`, handling dynamic objects.
+## Usage
+### API Reference
+To use `URLVariables`, just remember that below structure, then you'll understand how to use it.
 
-If you want to know more about the deatiled features, then utilize auto-completion of TypeScript or read the [Guide Documents](https://github.com/samchon/URLVariables/wiki). If you want to know about the `std.HashMap`, base class of the `URLVariables`, then visit the [TSTL proejct](https://github.com/samchon/tstl).
+If you want to know more about the deatiled features, then utilize auto-completion of TypeScript or read the [Guide Documents](https://github.com/samchon/URLVariables/wiki). You also want to know about the `std.HashMap`, base class of the `URLVariables`, then visit the [TSTL proejct](https://github.com/samchon/tstl).
+
+```typescript
+namespace URLVariables
+{
+    // DYNAMIC OBJECT
+    function parse(str: string, autoCase: boolean = true): Object;
+    function stringify(obj: Object): string;
+}
+
+class URLVariables extends std.HashMap<string, string>
+{
+    // CONSTRUCTORS & CONVERTERS
+    public constructor();
+    public constructor(url_encoded_str: string); // PARSE
+    public toString(); // RETURNS URL-ENCODED STRING
+
+    // ACCESSORS
+    public has(key: string): boolean;
+    public get(key: string): string;
+    public set(key: string, value: string): string;
+}
+```
+
+### Example Code
+In this section, we'll see global functions `URLVariables.parse()` and `URLVariables.stringify()`, handling dynamic objects, first. After that, we'll study `URLVariables class`, extended from `std.HashMap class`, who is much safer then handling dynamic objects.
 
 #### example.ts
 ```typescript
@@ -62,7 +82,7 @@ interface IAuthor
     is_crazy: boolean;
 }
 
-function main()
+function main(): void
 {
     let author: IAuthor = 
     {
@@ -74,12 +94,45 @@ function main()
         is_crazy: true
     };
     
-    test_class(author);
     test_global(author);
+    test_class(author);
+}
+
+function test_global(author: IAuthor): void
+{
+    //----
+    // STRINGIFY & PARSE
+    //----
+    // STRINGIFY -> OBJECT TO URL-ENCODED STRING
+    let url_encoded_str: string = URLVariables.stringify(author);
+
+    console.log(url_encoded_str);
+    console.log("----------------------------------\n");
+
+    // PARSE -> URL-ENCODED STRING TO OBJECT
+    let obj: IAuthor = URLVariables.parse(url_encoded_str, true);
+
+    //----
+    // VALIDATE
+    //----
+    // VALIDATE STRINGIFY
+    if (url_encoded_str != URLVariables.stringify(obj))
+        throw new std.DomainError("Error on URLVariables.decode().");
+
+    // VALIDATE PARSE -> (AUTHOR == OBJ)?
+    for (let key in author)
+        if (author[key] != obj[key])
+            throw new std.DomainError("Error on URLVariables.parse().");
+
+    // PRINT A DYNAMIC OBJECT, CREATED BY URL-ENCODED STRING
+    console.log("Re-generated Dynamic Object by url-encoding & decoding:\n");
+    console.log(obj);
 }
 
 function test_class(author: IAuthor): void
 {
+    console.log("\n----------------------------------\n");
+
     //----
     // GENERATE URL-VARIABLES OBJECT
     //----
@@ -94,8 +147,7 @@ function test_class(author: IAuthor): void
     dict.set("is_crazy", String(author.is_crazy));
 
     // CONVERT THE URL-VARIABLES OBJECT TO URL-ENCODED STRING
-	let url_encoded_str: string = dict.toString();
-	console.log(url_encoded_str + "\n");
+    let url_encoded_str: string = dict.toString();
 
     //----
     // VALIDATIONS
@@ -118,14 +170,15 @@ function test_class(author: IAuthor): void
         }
     );
     if (equal == false)
-        throw new std.LengthError("Elements are different.");
+        throw new std.InvalidArgument("Elements are different.");
+
+    // ALL ELEMENTS ARE EQUAL, THEN ENCODINGS MUST BE SAME
+    if (dict.toString() != vars.toString())
+        throw new std.DomainError("Error on URLVariables.toString().");
 
     //----
     // ACCESSORS
     //----
-    // TWO URL-ENCODED STRINGS MUST BE SAME
-    console.log("Same?:", url_encoded_str == vars.toString(), "\n");
-
     // ACCESS TO MEMBERS BY URLVariables.get()
     console.log
     (
@@ -142,54 +195,12 @@ function test_class(author: IAuthor): void
     console.log("Has nickname?:", dict.has("nickname"));
 }
 
-function test_global(author: IAuthor): void
-{
-    console.log("\n----------------------------------\n");
-
-    //----
-    // STRINGIFY -> OBJECT TO URL-ENCODED STRING
-    //----
-    let url_encoded_str: string = URLVariables.stringify(author);
-    let variables: URLVariables = new URLVariables(url_encoded_str);
-    
-    // VALIDATE STRINGIFY -> SAME WITH URL-VARIABLES ?
-    if (url_encoded_str != variables.toString())
-        throw new std.DomainError("Error on URLVariables.stringify().");
-
-    //----
-    // PARSE -> URL-ENCODED STRING TO OBJECT
-    //----
-    let obj: IAuthor = URLVariables.parse(url_encoded_str, true);
-
-    // VALIDATE PARSE -> (AUTHOR == OBJ)?
-    for (let key in author)
-        if (author[key] != obj[key])
-            throw new std.DomainError("Error on URLVariables.parse().");
-
-    // PRINT A DYNAMIC OBJECT, CREATED BY URL-ENCODED STRING
-    console.log("Re-generated Dynamic Object by url-encoding & decoding:\n");
-    console.log(obj);
-}
-
 main();
 ```
 
 #### output
 ```txt
 name=Samchon%20(Jeongho%20Nam)&age=29&git=https%3A%2F%2Fgithub.com%2Fsamchon%2Ftstl&homepage=http%3A%2F%2Fsamchon.org&memo=Hello%2C%20I'm%20the%20best%20programmer%20in%20Korea.&is_crazy=true
-
-Same?: true
-
-Hello, I'm the best programmer in Korea.
-I'm Samchon (Jeongho Nam) and 29 years old.
-I've published my libraries on:
-  - GitHub: https://github.com/samchon/tstl
-  - Homepage: http://samchon.org
-
-Am I crazy?: true
-Has name?: true
-Has nickname?: false
-
 ----------------------------------
 
 Re-generated Dynamic Object by url-encoding & decoding:
@@ -200,6 +211,18 @@ Re-generated Dynamic Object by url-encoding & decoding:
   homepage: 'http://samchon.org',
   memo: 'Hello, I\'m the best programmer in Korea.',
   is_crazy: true }
+
+----------------------------------
+
+Hello, I'm the best programmer in Korea.
+I'm Samchon (Jeongho Nam) and 29 years old.
+I've published my libraries on:
+  - GitHub: https://github.com/samchon/tstl
+  - Homepage: http://samchon.org
+
+Am I crazy?: true
+Has name?: true
+Has nickname?: false
 ```
 
 

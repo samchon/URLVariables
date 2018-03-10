@@ -95,14 +95,11 @@ namespace URLVariables
 {
 	export type Iterator = std.HashMap.Iterator<string, string>;
 	export type ReverseIterator = std.HashMap.ReverseIterator<string, string>;
-
-	export type iterator = Iterator;
-	export type reverse_iterator = ReverseIterator;
-
+	
 	export function parse<T = any>(str: string, autoCase: boolean = true): T
 	{
 		let variables: URLVariables = new URLVariables(str);
-		let ret: any = new Object();
+		let ret: any = new Object() as T;
 
 		for (let entry of variables)
 		{
@@ -112,14 +109,16 @@ namespace URLVariables
 				continue;
 			}
 
-			if (entry.second == "true" || entry.second == "false")
+			if (entry.second == "")
+				ret[entry.first] = true;
+			else if (entry.second == "true" || entry.second == "false")
 				ret[entry.first] = (entry.second == "true");
 			else if (Number.isNaN(Number(entry.second)) == false)
 				ret[entry.first] = Number(entry.second);
 			else
 				ret[entry.first] = entry.second;
 		}
-		return ret;
+		return ret as T;
 	}
 	
 	export function stringify<T = any>(obj: T): string

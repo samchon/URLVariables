@@ -15,7 +15,7 @@ interface IAuthor
     [key: string]: any;
 }
 
-function main()
+function main(): void
 {
     let author: IAuthor = 
     {
@@ -27,12 +27,45 @@ function main()
         is_crazy: true
     };
     
-    test_class(author);
     test_global(author);
+    test_class(author);
+}
+
+function test_global(author: IAuthor): void
+{
+    //----
+    // STRINGIFY & PARSE
+    //----
+    // STRINGIFY -> OBJECT TO URL-ENCODED STRING
+    let url_encoded_str: string = URLVariables.stringify(author);
+
+    console.log(url_encoded_str);
+    console.log("----------------------------------\n");
+
+    // PARSE -> URL-ENCODED STRING TO OBJECT
+    let obj: IAuthor = URLVariables.parse(url_encoded_str, true);
+
+    //----
+    // VALIDATE
+    //----
+    // VALIDATE STRINGIFY
+    if (url_encoded_str != URLVariables.stringify(obj))
+        throw new std.DomainError("Error on URLVariables.decode().");
+
+    // VALIDATE PARSE -> (AUTHOR == OBJ)?
+    for (let key in author)
+        if (author[key] != obj[key])
+            throw new std.DomainError("Error on URLVariables.parse().");
+
+    // PRINT A DYNAMIC OBJECT, CREATED BY URL-ENCODED STRING
+    console.log("Re-generated Dynamic Object by url-encoding & decoding:\n");
+    console.log(obj);
 }
 
 function test_class(author: IAuthor): void
 {
+    console.log("\n----------------------------------\n");
+
     //----
     // GENERATE URL-VARIABLES OBJECT
     //----
@@ -47,8 +80,7 @@ function test_class(author: IAuthor): void
     dict.set("is_crazy", String(author.is_crazy));
 
     // CONVERT THE URL-VARIABLES OBJECT TO URL-ENCODED STRING
-	let url_encoded_str: string = dict.toString();
-	console.log(url_encoded_str + "\n");
+    let url_encoded_str: string = dict.toString();
 
     //----
     // VALIDATIONS
@@ -71,14 +103,15 @@ function test_class(author: IAuthor): void
         }
     );
     if (equal == false)
-        throw new std.LengthError("Elements are different.");
+        throw new std.InvalidArgument("Elements are different.");
+
+    // ALL ELEMENTS ARE EQUAL, THEN ENCODINGS MUST BE SAME
+    if (dict.toString() != vars.toString())
+        throw new std.DomainError("Error on URLVariables.toString().");
 
     //----
     // ACCESSORS
     //----
-    // TWO URL-ENCODED STRINGS MUST BE SAME
-    console.log("Same?:", url_encoded_str == vars.toString(), "\n");
-
     // ACCESS TO MEMBERS BY URLVariables.get()
     console.log
     (
@@ -93,35 +126,6 @@ function test_class(author: IAuthor): void
     console.log("Am I crazy?:", dict.has("is_crazy"));
     console.log("Has name?:", dict.has("name"));
     console.log("Has nickname?:", dict.has("nickname"));
-}
-
-function test_global(author: IAuthor): void
-{
-    console.log("\n----------------------------------\n");
-
-    //----
-    // STRINGIFY -> OBJECT TO URL-ENCODED STRING
-    //----
-    let url_encoded_str: string = URLVariables.stringify(author);
-    let variables: URLVariables = new URLVariables(url_encoded_str);
-    
-    // VALIDATE STRINGIFY -> SAME WITH URL-VARIABLES ?
-    if (url_encoded_str != variables.toString())
-        throw new std.DomainError("Error on URLVariables.stringify().");
-
-    //----
-    // PARSE -> URL-ENCODED STRING TO OBJECT
-    //----
-    let obj: IAuthor = URLVariables.parse(url_encoded_str, true);
-
-    // VALIDATE PARSE -> (AUTHOR == OBJ)?
-    for (let key in author)
-        if (author[key] != obj[key])
-            throw new std.DomainError("Error on URLVariables.parse().");
-
-    // PRINT A DYNAMIC OBJECT, CREATED BY URL-ENCODED STRING
-    console.log("Re-generated Dynamic Object by url-encoding & decoding:\n");
-    console.log(obj);
 }
 
 main();
