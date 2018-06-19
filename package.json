@@ -6,7 +6,7 @@
     "email": "samchon@samchon.org",
     "url": "http://samchon.org"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -30,6 +30,6 @@
     "decode"
   ],
   "dependencies": {
-    "tstl": ">= 1.7.7"
+    "tstl": ">= 2.0.0"
   }
 }
