@@ -38,7 +38,7 @@ npm install --save url-variables
 ### API Reference
 To use `URLVariables`, just remember that below structure, then you'll understand how to use it.
 
-If you want to know more about the deatiled features, then utilize auto-completion of TypeScript or read the [Guide Documents](https://github.com/samchon/URLVariables/wiki). You also want to know about the `std.HashMap`, base class of the `URLVariables`, then visit the [TSTL proejct](https://github.com/samchon/tstl).
+If you want to know more about the detailed features, then utilize auto-completion of TypeScript or read the [Guide Documents](https://github.com/samchon/URLVariables/wiki). You also want to know about the `std.HashMap`, base class of the `URLVariables`, then visit the [TSTL proejct](https://github.com/samchon/tstl).
 
 ```typescript
 namespace URLVariables
