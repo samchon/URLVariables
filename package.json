@@ -6,11 +6,11 @@
     "email": "samchon@samchon.org",
     "url": "http://samchon.org"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc && tsc --removeComments --declaration false && node lib/test",
+    "build": "tsc && node lib/test",
     "test": "node lib/test"
   },
   "license": "BSD-3-Clause",
@@ -30,6 +30,6 @@
     "decode"
   ],
   "dependencies": {
-    "tstl": ">= 2.0.0"
+    "tstl": ">= 2.0.5"
   }
 }

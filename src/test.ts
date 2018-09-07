@@ -1,5 +1,5 @@
-import std = require("tstl");
-import URLVariables = require("./index");
+import * as std from "tstl";
+import * as URLVariables from "./index";
 
 type Element = std.Entry<string, string>;
 

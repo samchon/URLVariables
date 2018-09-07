@@ -132,7 +132,8 @@ namespace URLVariables
 
 		let variables: URLVariables = new URLVariables();
 		for (let key in obj)
-			variables.set(key, String(obj[key]));
+			if (obj[key] !== undefined)
+				variables.set(key, String(obj[key]));
 
 		return variables.toString();
 	}
