@@ -6,17 +6,18 @@
     "email": "samchon@samchon.org",
     "url": "http://samchon.org"
   },
-  "version": "1.0.1",
+  "version": "1.0.3",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc && tsc --removeComments --declaration false && node lib/test",
+    "build": "npm run compile && npm run test",
+    "compile": "tsc",
     "test": "node lib/test"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samchon/urlvariables.git"
+    "url": "https://github.com/samchon/urlvariables"
   },
   "homepage": "https://github.com/samchon/urlvariables",
   "bugs": {
@@ -30,6 +31,9 @@
     "decode"
   ],
   "dependencies": {
-    "tstl": ">= 2.0.0"
+    "tstl": ">= 2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.2"
   }
 }

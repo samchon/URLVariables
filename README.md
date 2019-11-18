@@ -1,8 +1,8 @@
 # URLVariables
-[![Build Status](https://travis-ci.org/samchon/URLVariables.svg?branch=master)](https://travis-ci.org/samchon/URLVariables)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/samchon/URLVariables/blob/master/LICENSE)
 [![npm version](https://badge.fury.io/js/url-variables.svg)](https://www.npmjs.com/package/url-variables)
 [![Downloads](https://img.shields.io/npm/dm/url-variables.svg)](https://www.npmjs.com/package/url-variables)
-[![DeepScan grade](https://deepscan.io/api/projects/1948/branches/8874/badge/grade.svg)](https://deepscan.io/dashboard#view=project&pid=1948&bid=8874)
+[![Build Status](https://github.com/samchon/URLVariables/workflows/build/badge.svg)](https://github.com/samchon/URLVariables/actions?query=workflow%3Abuild)
 [![Chat on Gitter](https://badges.gitter.im/samchon/URLVariables.svg)](https://gitter.im/samchon/URLVariables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 `URLVariables`, it's the most simple, concise and eledic library for URL-encoding & URL-decoding. You can parse or encode url-string very easily with this `URLVariables`.
