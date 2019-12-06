@@ -92,10 +92,10 @@ export namespace URLVariables
 	export type Iterator = HashMap.Iterator<string, string>;
 	export type ReverseIterator = HashMap.ReverseIterator<string, string>;
 	
-	export function parse<T = any>(str: string, autoCase: boolean = true): T
+	export function parse<T extends object>(str: string, autoCase: boolean = true): Primitive<T>
 	{
 		let variables: URLVariables = new URLVariables(str);
-		let ret: any = new Object() as T;
+		let ret: any = {};
 
 		for (let entry of variables)
 		{
@@ -114,10 +114,10 @@ export namespace URLVariables
 			else
 				ret[entry.first] = entry.second;
 		}
-		return ret as T;
+		return ret as Primitive<T>;
 	}
 	
-	export function stringify<T = any>(obj: T): string
+	export function stringify<T extends object>(obj: T): string
 	{
 		if (typeof obj == "boolean" || typeof obj == "number")
 			return String(obj);
@@ -132,4 +132,50 @@ export namespace URLVariables
 
 		return variables.toString();
 	}
+
+	export type Primitive<Instance> = value_of<Instance> extends object
+		? Instance extends object
+			? PrimitiveObject<Instance> // object would be primitified
+			: never // cannot be
+		: value_of<Instance>;
+		
+
+	/**
+     * @hidden
+     */
+    type PrimitiveObject<Instance extends object> =
+    {
+        [P in keyof Instance]: Instance[P] extends Function
+            ? never
+            : Primitive<Instance[P]>
+    };
+
+	/**
+     * @hidden
+     */
+    type value_of<Instance> = 
+        is_value_of<Instance, Boolean> extends true ? boolean
+        : is_value_of<Instance, Number> extends true ? number
+        : is_value_of<Instance, String> extends true ? string
+        : Instance;
+
+    /**
+     * @hidden
+     */
+    type is_value_of<Instance, Object extends IValueOf<any>> = 
+        Instance extends Object
+            ? Object extends IValueOf<infer Primitive>
+                ? Instance extends Primitive
+                    ? false
+                    : true // not Primitive, but Object
+                : false // cannot be
+            : false;
+
+	/**
+	 * @hidden
+	 */
+	interface IValueOf<T>
+    {
+        valueOf(): T;
+    }
 }
