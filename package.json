@@ -12,6 +12,7 @@
   "scripts": {
     "build": "npm run compile && npm run test",
     "compile": "tsc",
+    "dev": "tsc --watch",
     "test": "node lib/test"
   },
   "license": "MIT",
